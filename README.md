@@ -54,10 +54,21 @@ sao injetados por JS e mudam com promocao: o HTML de la diz 12x R3,01 e a
 pagina no ar mostra 12x R3,64. Cravar um deles aqui colocaria preco errado no
 ar no dia que a promo virasse.
 
+O fundo e ARTE, nao enfeite de interface: os quatro cards vizinhos sao video
+colorido em movimento e este slot esta no lugar de um video, entao ele se
+comporta como midia. Duas auras de luz derivam em periodos diferentes (19s e
+26s), animadas por transform, que roda no compositor e nao repinta. As cores
+saem todas da rampa da marca.
+
+Um "veu" escurece o centro por cima das auras e por baixo do texto. E ele que
+segura o contraste: sem ele o azul passaria atras do numero. Medido nos pixels
+reais, no pior instante da animacao: SENIOR 12,74:1, 80 em 14,10:1, contratos
+7,05:1.
+
 O numero conta de 0 a 80 quando o card entra na tela, no mesmo gatilho dos
-videos. Sob `prefers-reduced-motion` ele nasce pronto, com o 80 no lugar.
-A escala usa container query, entao a composicao acompanha a largura do card
-de 181px a 320px sem media query.
+videos. Sob `prefers-reduced-motion` nada se move e ele nasce pronto, com o 80
+no lugar. A escala usa container query, entao a composicao acompanha a largura
+do card de 181px a 320px sem media query.
 
 ## O que falta
 
