@@ -601,10 +601,17 @@ body {
   color: var(--text-body);
   line-height: 1.4;
 }
+/* As datas chegaram. O --text-muted daqui era o tratamento do "a definir":
+   valor pendente ficava um degrau de luminancia abaixo do rotulo, sem badge e
+   sem alarme. Agora que sao datas de verdade, o valor passa a ser a informacao
+   e o rotulo vira o descritor, entao a hierarquia inverte: valor em
+   --text-strong, rotulo segue em --text-body.
+   Sobre --surface-1: --text-strong = 14,90:1, --text-body = 9,27:1. */
 .calendario-etapa-valor {
   margin-top: var(--space-2);
   font-size: var(--text-base);
-  color: var(--text-muted);
+  font-weight: 600;
+  color: var(--text-strong);
   line-height: 1.5;
 }
 .calendario-action {
