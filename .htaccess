@@ -1,0 +1,101 @@
+# ============================================================================
+# ZERO7 EXPERIENCE
+# Cache, compressao, tipos de arquivo e codificacao.
+# Tudo dentro de <IfModule>: se o modulo nao existir no servidor, a regra e
+# ignorada em vez de derrubar o site com erro 500.
+# ============================================================================
+
+
+# ----------------------------------------------------------------------------
+# CODIFICACAO
+# O <meta charset> do HTML PERDE para o cabecalho que o servidor manda. Se o
+# Apache anunciar ISO-8859-1, todo acento da pagina vira simbolo, e a pagina e
+# inteira em portugues. Isto forca UTF-8 na fonte.
+# ----------------------------------------------------------------------------
+AddDefaultCharset UTF-8
+
+<IfModule mod_mime.c>
+  AddCharset UTF-8 .html .css .js .svg
+
+  # Tipos que hospedagem antiga costuma nao conhecer. Sem isto o navegador
+  # recebe "application/octet-stream" e simplesmente nao renderiza.
+  AddType video/mp4 .mp4
+  AddType image/avif .avif
+  AddType image/webp .webp
+  AddType image/svg+xml .svg
+  AddType font/woff2 .woff2
+</IfModule>
+
+
+# ----------------------------------------------------------------------------
+# COMPRESSAO
+# Vale so para texto. Video, JPEG e woff2 ja sao comprimidos: passar de novo
+# so gasta CPU e nao encolhe nada.
+# ----------------------------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain
+  AddOutputFilterByType DEFLATE application/javascript text/javascript
+  AddOutputFilterByType DEFLATE image/svg+xml application/json
+</IfModule>
+
+
+# ----------------------------------------------------------------------------
+# CACHE
+#
+# O HTML NUNCA e cacheado. Ele e o indice: e ele que diz qual versao de cada
+# arquivo carregar. Mantendo o HTML sempre fresco, basta trocar o ?v= dentro
+# dele para o navegador buscar tudo de novo.
+#
+# Todo o resto e cacheado por um ano e marcado immutable, porque todo arquivo
+# referenciado pelo HTML carrega ?v=. Trocou um arquivo, sobe o numero do ?v=
+# no index.html: a URL muda, e URL nova nao tem cache. As fontes nao precisam
+# de ?v= porque o nome delas ja tem hash.
+# ----------------------------------------------------------------------------
+<IfModule mod_headers.c>
+
+  <FilesMatch "\.(html|htm)$">
+    Header always set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+    Header always set Pragma "no-cache"
+    Header always set Expires "0"
+  </FilesMatch>
+
+  <FilesMatch "\.(css|js)$">
+    Header always set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  <FilesMatch "\.(mp4|jpg|jpeg|png|gif|webp|avif|svg|ico|woff|woff2|ttf|otf)$">
+    Header always set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType text/javascript "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType video/mp4 "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/avif "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+
+# ----------------------------------------------------------------------------
+# VIDEO
+# Sem isto alguns servidores nao aceitam pedido de trecho, e o navegador
+# precisa baixar o arquivo inteiro antes de mostrar o primeiro quadro.
+# ----------------------------------------------------------------------------
+<IfModule mod_headers.c>
+  <FilesMatch "\.mp4$">
+    Header always set Accept-Ranges bytes
+  </FilesMatch>
+</IfModule>
+
+
+# Nao listar o conteudo das pastas para quem acessar /assets/ direto.
+Options -Indexes

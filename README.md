@@ -69,6 +69,39 @@ qualquer imitacao em JS.
 Para tirar o scroll suave, apague a linha do `lenis.min.js` no `index.html`.
 A pagina continua funcionando normal.
 
+## Cache e publicacao
+
+O `.htaccess` na raiz cuida de cache, compressao, tipos de arquivo e
+codificacao. Tudo dentro de `<IfModule>`: se o modulo nao existir no servidor,
+a regra e ignorada em vez de derrubar o site com erro 500.
+
+A regra e simples:
+
+- **O `index.html` NUNCA e cacheado.** Ele e o indice: e ele que diz qual
+  versao de cada arquivo carregar.
+- **Todo o resto e cacheado por um ano**, marcado `immutable`.
+
+Isso so funciona porque todo arquivo referenciado pelo HTML carrega `?v=`.
+
+### Trocou algum arquivo? Suba o numero
+
+Depois de substituir qualquer css, js, video, foto ou logo, abra o
+`index.html` e troque **todos** os `?v=1` por `?v=2` (e assim por diante).
+Um find and replace resolve.
+
+A URL muda, e URL nova nao tem cache: o navegador busca o arquivo novo na
+hora, mesmo em quem ja tinha visitado o site. **Sem isso, com cache de um ano,
+quem ja visitou continuaria vendo a versao velha por um ano.**
+
+As fontes ficam de fora do `?v=` de proposito: o nome delas ja tem hash do
+conteudo, entao a URL muda sozinha quando o arquivo muda.
+
+### Codificacao
+
+O `.htaccess` forca `UTF-8`. Isso importa porque o cabecalho que o servidor
+manda **vence** o `<meta charset>` do HTML: se o Apache anunciar ISO-8859-1,
+todo acento da pagina vira simbolo, e a pagina e inteira em portugues.
+
 ## Editar
 
 - **Texto:** direto no `index.html`.
