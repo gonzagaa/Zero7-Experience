@@ -33,13 +33,37 @@
     <main>
       <section class="hero-hero">
         <div class="hero-backdrop">
-          <img
-            src="./assets/hero/hero-fundo.avif"
-            alt=""
-            class="media-fill"
-            fetchpriority="high"
-            decoding="async"
-          />
+          <!-- Mosaico: 3 colunas em perspectiva descendo, so a partir de 1080.
+               Os clipes sao versoes de 320x400 feitas so para isto, porque na
+               tela eles vao desfocados e resolucao nao serve para nada. -->
+          <div class="mosaico" aria-hidden="true">
+            <div class="mosaico__plano">
+              <div class="mosaico__coluna">
+                <div class="mosaico__trilha">
+                  <video class="mosaico__tile" src="./assets/hero/mosaico/1-rooftop.mp4" poster="./assets/hero/mosaico/1-rooftop.jpg" preload="none" muted loop playsinline></video>
+                  <video class="mosaico__tile" src="./assets/hero/mosaico/3-fabricio.mp4" poster="./assets/hero/mosaico/3-fabricio.jpg" preload="none" muted loop playsinline></video>
+                  <video class="mosaico__tile" src="./assets/hero/mosaico/1-rooftop.mp4" poster="./assets/hero/mosaico/1-rooftop.jpg" preload="none" muted loop playsinline></video>
+                  <video class="mosaico__tile" src="./assets/hero/mosaico/3-fabricio.mp4" poster="./assets/hero/mosaico/3-fabricio.jpg" preload="none" muted loop playsinline></video>
+                </div>
+              </div>
+              <div class="mosaico__coluna">
+                <div class="mosaico__trilha">
+                  <video class="mosaico__tile" src="./assets/hero/mosaico/2-racing.mp4" poster="./assets/hero/mosaico/2-racing.jpg" preload="none" muted loop playsinline></video>
+                  <video class="mosaico__tile" src="./assets/hero/mosaico/4-bastidores.mp4" poster="./assets/hero/mosaico/4-bastidores.jpg" preload="none" muted loop playsinline></video>
+                  <video class="mosaico__tile" src="./assets/hero/mosaico/2-racing.mp4" poster="./assets/hero/mosaico/2-racing.jpg" preload="none" muted loop playsinline></video>
+                  <video class="mosaico__tile" src="./assets/hero/mosaico/4-bastidores.mp4" poster="./assets/hero/mosaico/4-bastidores.jpg" preload="none" muted loop playsinline></video>
+                </div>
+              </div>
+              <div class="mosaico__coluna">
+                <div class="mosaico__trilha">
+                  <video class="mosaico__tile" src="./assets/hero/mosaico/4-bastidores.mp4" poster="./assets/hero/mosaico/4-bastidores.jpg" preload="none" muted loop playsinline></video>
+                  <video class="mosaico__tile" src="./assets/hero/mosaico/1-rooftop.mp4" poster="./assets/hero/mosaico/1-rooftop.jpg" preload="none" muted loop playsinline></video>
+                  <video class="mosaico__tile" src="./assets/hero/mosaico/4-bastidores.mp4" poster="./assets/hero/mosaico/4-bastidores.jpg" preload="none" muted loop playsinline></video>
+                  <video class="mosaico__tile" src="./assets/hero/mosaico/1-rooftop.mp4" poster="./assets/hero/mosaico/1-rooftop.jpg" preload="none" muted loop playsinline></video>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="hero-scrim"></div>
         </div>
         <div class="z7-container hero-inner">

@@ -438,12 +438,79 @@
     });
   }
 
+  /* ======================================================================
+     6. MOSAICO DA HERO
+     Os tiles so tocam enquanto a hero esta na tela. Rolou para baixo, os doze
+     pausam: nao ha razao para manter doze decodificadores rodando enquanto o
+     visitante le o FAQ.
+
+     O mosaico so existe a partir de 1080px (o CSS o esconde abaixo disso),
+     entao aqui checamos o mesmo limite antes de pedir qualquer download. Com
+     preload="none", num celular esses arquivos nunca chegam a ser baixados.
+
+     Sob prefers-reduced-motion nada toca: as trilhas ficam paradas e os tiles
+     no primeiro quadro, o que ainda le como um mosaico, so que imovel.
+     ====================================================================== */
+  function ligarMosaico() {
+    var mosaico = document.querySelector(".mosaico");
+    if (!mosaico) return;
+
+    if (window.matchMedia && window.matchMedia(SEM_MOVIMENTO).matches) return;
+
+    /* So os tiles que estao REALMENTE na tela. No mobile o CSS esconde a
+       terceira coluna, e um <video> escondido que ninguem manda tocar nunca
+       baixa o arquivo: sao 8 decodificadores no celular em vez de 12.
+       Isso importa porque varios Android tem limite baixo de decodificadores
+       de video simultaneos, e estourar esse limite faz o navegador cair para
+       software ou desistir de tocar. */
+    var tiles = Array.prototype.filter.call(
+      mosaico.querySelectorAll(".mosaico__tile"),
+      function (v) {
+        return v.offsetParent !== null;
+      },
+    );
+    if (!tiles.length) return;
+
+    function todos(acao) {
+      tiles.forEach(acao);
+    }
+
+    if (!("IntersectionObserver" in window)) {
+      todos(function (v) {
+        var p = v.play();
+        if (p && p.catch) p.catch(function () {});
+      });
+      return;
+    }
+
+    var observador = new IntersectionObserver(
+      function (entradas) {
+        entradas.forEach(function (entrada) {
+          if (entrada.isIntersecting) {
+            todos(function (v) {
+              var p = v.play();
+              if (p && p.catch) p.catch(function () {});
+            });
+          } else {
+            todos(function (v) {
+              if (!v.paused) v.pause();
+            });
+          }
+        });
+      },
+      { threshold: 0.05 },
+    );
+
+    observador.observe(mosaico);
+  }
+
   function iniciar() {
     ligarAcordeao();
     ligarVideos();
     ligarBotoes();
     ligarScrollSuave();
     ligarPlano();
+    ligarMosaico();
   }
 
   if (document.readyState === "loading") {

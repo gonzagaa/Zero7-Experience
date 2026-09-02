@@ -21,6 +21,41 @@ assets/
 **Todos os caminhos sao relativos.** A pasta funciona em qualquer lugar do
 dominio: raiz, subdominio ou subpasta, sem configurar nada.
 
+## Mosaico da hero
+
+A hero nao tem mais imagem de fundo: o fundo e um mosaico de video em
+perspectiva, descendo em velocidades diferentes (34s, 46s e 39s, com
+defasagens, para o conjunto nao ler como um bloco unico caindo).
+
+- **Desktop (>= 1080px):** tres colunas, ocupando 62% da largura, encostado a
+  direita, sumindo para a esquerda onde o texto vive. 12 tiles.
+- **Mobile e tablet (< 1080px):** tela inteira por tras do texto, com DUAS
+  colunas. 8 tiles.
+
+O corte de tres para duas colunas no celular nao e estetico: varios Android
+tem limite baixo de decodificadores de video simultaneos, e estourar esse
+limite faz o navegador cair para software ou desistir de tocar. A terceira
+coluna fica `display: none` e o JS so da play no que esta visivel, entao
+aqueles quatro arquivos nem chegam a ser baixados no celular.
+
+Os clipes em `assets/hero/mosaico/` sao versoes proprias de 384x480, 6
+segundos, sem audio, feitas so para isto. Cada um tem um `.jpg` de mesmo
+nome que serve de poster: e o que aparece antes do video comecar, e o que
+sobra se o video nao tocar.
+
+O desfoque e a dessaturacao estao em CSS (`.mosaico__plano`), para poder
+ajustar sem passar pelo ffmpeg. Custa FPS: filtro em container obriga o
+navegador a redesenhar a subarvore inteira a cada quadro. Se pesar demais, os
+caminhos sao, nesta ordem: baixar o raio do blur, cair para duas colunas no
+desktop tambem, ou assar o desfoque nos arquivos com `gblur=sigma=7` no
+ffmpeg e tirar o `filter` do CSS.
+
+Os tiles so tocam enquanto a hero esta na tela e pausam ao rolar para longe.
+Sob `prefers-reduced-motion` nada toca e nada e baixado: ficam os posters.
+
+A imagem `assets/hero/hero-fundo.avif` continua na pasta mas nao e mais
+usada. Guardada caso voce queira voltar atras.
+
 ## Scroll suave
 
 A pagina usa Lenis. O arquivo esta em `script/`, nao vem de CDN: se a internet
@@ -70,13 +105,6 @@ videos. Sob `prefers-reduced-motion` nada se move e ele nasce pronto, com o 80
 no lugar. A escala usa container query, entao a composicao acompanha a largura
 do card de 181px a 320px sem media query.
 
-## O que falta
-
-| O que | Onde colocar |
-| --- | --- |
-| Foto de fundo da hero | `assets/hero/` e apontar no `index.html` |
-
-Os dois aparecem hoje como retangulo vazio.
 
 ## Videos
 
