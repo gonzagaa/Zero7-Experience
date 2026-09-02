@@ -69,6 +69,30 @@ qualquer imitacao em JS.
 Para tirar o scroll suave, apague a linha do `lenis.min.js` no `index.html`.
 A pagina continua funcionando normal.
 
+## Tela de redirecionamento
+
+O Gamification nao tem endereco proprio: ele mora dentro da Area do Trader.
+Entao os tres CTAs da pagina nao mandam a pessoa direto, eles mostram uma tela
+por 4 segundos com a instrucao do que fazer ao chegar, e so depois
+redirecionam para `app.zero7.com.br`.
+
+Os CTAs sao marcados com `data-redireciona` no `index.html`. O link do rodape
+(Area do Trader) NAO tem a marca de proposito: intencao diferente, vai direto.
+
+**Para mudar o tempo:** a constante `SAIDA_MS` no topo da funcao `ligarSaida`
+em `script/site.js`. A barra de progresso le esse mesmo valor, entao os dois
+nunca saem de sincronia.
+
+Detalhes que importam:
+
+- Clique com Ctrl, Cmd, Shift ou botao do meio passa direto, sem a tela. Quem
+  quer abrir em outra aba nao pode ser sequestrado por um overlay.
+- Sem JavaScript os links continuam levando para a Area do Trader
+  normalmente, so que sem a instrucao. A tela e melhoria, nao requisito.
+- A barra e a unica animacao da pagina que roda mesmo com
+  `prefers-reduced-motion`: ela informa quanto falta, e sem ela a espera de 4
+  segundos leria como travamento. Barra linear nao e gatilho vestibular.
+
 ## Cache e publicacao
 
 O `.htaccess` na raiz cuida de cache, compressao, tipos de arquivo e

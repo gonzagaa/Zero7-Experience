@@ -1592,3 +1592,157 @@ html.lenis body {
     transform: translate3d(0, 0, 0);
   }
 }
+
+/* ==========================================================================
+   TELA DE REDIRECIONAMENTO
+   O Gamification nao tem URL propria: mora dentro da Area do Trader. Entao o
+   botao precisa entregar a instrucao junto com o redirecionamento, senao a
+   pessoa chega no app e nao sabe para onde ir.
+
+   Nao inventa vocabulario novo: a aura vem do card do Plano Senior, a rampa da
+   barra vem dos botoes, a tipografia e a mesma da pagina.
+
+   A barra NAO e enfeite: ela mostra quanto falta. Por isso e a unica coisa
+   aqui que fica de fora da regra global de prefers-reduced-motion (barra linear
+   de progresso nao e gatilho vestibular, e sem ela a espera vira travamento).
+   ========================================================================== */
+
+.saida {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  overflow: hidden;
+  isolation: isolate;
+
+  display: grid;
+  place-items: center;
+  padding: var(--space-8);
+
+  background-color: var(--surface-0);
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease);
+}
+
+.saida[hidden] {
+  display: none;
+}
+
+.saida--visivel {
+  opacity: 1;
+}
+
+/* Mesmas auas do card do Plano Senior, em escala de tela cheia. */
+.saida__aura {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 50%;
+  aspect-ratio: 1;
+  will-change: transform;
+}
+
+.saida__aura--a {
+  inset: -50% auto auto -30%;
+  width: 90vmax;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgb(var(--z7-sky-rgb) / 0.28) 0%,
+    rgb(var(--z7-deep-rgb) / 0.16) 42%,
+    rgb(0 0 0 / 0) 70%
+  );
+  animation: saida-deriva-a 17s ease-in-out infinite;
+}
+
+.saida__aura--b {
+  inset: auto -30% -50% auto;
+  width: 80vmax;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgb(var(--z7-deep-rgb) / 0.4) 0%,
+    rgb(var(--z7-sky-rgb) / 0.12) 45%,
+    rgb(0 0 0 / 0) 68%
+  );
+  animation: saida-deriva-b 23s ease-in-out infinite;
+}
+
+.saida__caixa {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 52rem);
+  text-align: center;
+}
+
+.saida__logo {
+  height: 4rem;
+  aspect-ratio: 176 / 55;
+  object-fit: contain;
+  margin-inline: auto;
+}
+
+.saida__texto {
+  margin-top: var(--space-12);
+  font-family: var(--z7-font-display);
+  font-size: var(--display-3);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.014em;
+  color: var(--text-strong);
+  text-wrap: pretty;
+}
+
+.saida__barra {
+  margin-top: var(--space-12);
+  height: 0.3rem;
+  border-radius: 999rem;
+  background-color: var(--border-default);
+  overflow: hidden;
+}
+
+.saida__barra span {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background-image: var(--z7-grad-brand);
+}
+
+/* A barra corre mesmo com movimento reduzido: ela informa, nao decora. */
+.saida--visivel .saida__barra span {
+  animation: saida-barra var(--saida-duracao, 4s) linear forwards !important;
+  animation-iteration-count: 1 !important;
+}
+
+@keyframes saida-barra {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes saida-deriva-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(12%, 8%) scale(1.12);
+  }
+}
+
+@keyframes saida-deriva-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1.06);
+  }
+  50% {
+    transform: translate(-10%, -8%) scale(0.92);
+  }
+}
+
+@media (min-width: 768px) {
+  .saida__logo {
+    height: 4.8rem;
+  }
+}

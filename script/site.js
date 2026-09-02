@@ -504,6 +504,72 @@
     observador.observe(mosaico);
   }
 
+  /* ======================================================================
+     7. TELA DE REDIRECIONAMENTO
+     O Gamification nao tem endereco proprio: ele mora dentro da Area do
+     Trader. Entao o botao nao pode so mandar a pessoa para la, ele precisa
+     dizer o que fazer quando chegar. E o que esta tela faz nos poucos
+     segundos entre o clique e a Area do Trader abrir.
+
+     Cuidados que importam:
+
+     - Clique com Ctrl, Cmd, Shift ou botao do meio passa direto. Quem quer
+       abrir em outra aba nao pode ser sequestrado por um overlay.
+     - Sem JS, os links continuam levando para a Area do Trader normalmente.
+       A tela e melhoria, nao requisito.
+     - role="status" com aria-live: quem usa leitor de tela ouve a instrucao
+       em vez de so ser jogado para outro site.
+     - O tempo esta em UMA constante abaixo, e a barra le esse mesmo valor:
+       mudar um numero muda os dois, sem eles saírem de sincronia.
+     ====================================================================== */
+  var SAIDA_MS = 4000;
+
+  function ligarSaida() {
+    var tela = document.getElementById("saida");
+    var gatilhos = document.querySelectorAll("[data-redireciona]");
+    if (!tela || !gatilhos.length) return;
+
+    tela.style.setProperty("--saida-duracao", SAIDA_MS + "ms");
+    var indo = false;
+
+    function mostrar(destino) {
+      if (indo) return;
+      indo = true;
+
+      tela.hidden = false;
+      /* Dois quadros antes de acender: sem isso o navegador aplica display e
+         opacity no mesmo passo e a transicao nao acontece. */
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          tela.classList.add("saida--visivel");
+        });
+      });
+
+      document.documentElement.style.overflow = "hidden";
+      window.setTimeout(function () {
+        window.location.href = destino;
+      }, SAIDA_MS);
+    }
+
+    Array.prototype.forEach.call(gatilhos, function (link) {
+      link.addEventListener("click", function (evento) {
+        /* Nova aba, nova janela, download: nao interfere. */
+        if (
+          evento.defaultPrevented ||
+          evento.button !== 0 ||
+          evento.metaKey ||
+          evento.ctrlKey ||
+          evento.shiftKey ||
+          evento.altKey
+        ) {
+          return;
+        }
+        evento.preventDefault();
+        mostrar(link.href);
+      });
+    });
+  }
+
   function iniciar() {
     ligarAcordeao();
     ligarVideos();
@@ -511,6 +577,7 @@
     ligarScrollSuave();
     ligarPlano();
     ligarMosaico();
+    ligarSaida();
   }
 
   if (document.readyState === "loading") {
