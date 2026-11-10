@@ -30,6 +30,28 @@
   </head>
 
   <body>
+    <!-- Tarja de urgencia. Fica grudada no topo (sticky) durante toda a
+         rolagem. A linha fina embaixo e o quanto do periodo de participacao
+         (01/09 a 30/11) ja passou: o site.js calcula e preenche. Depois de
+         30/11 o site.js esconde a tarja, porque "ultimos dias" deixa de ser
+         verdade. -->
+    <aside class="tarja" aria-label="Aviso da campanha">
+      <span class="tarja__listras" aria-hidden="true"></span>
+      <span class="tarja__luz" aria-hidden="true"></span>
+      <div class="z7-container tarja__inner">
+        <p class="tarja__texto">
+          <span class="tarja__pulso" aria-hidden="true"></span
+          ><span><strong class="tarja__destaque">Últimos dias</strong> para
+          conquistar a sua vaga no Zero7 experience!</span>
+        </p>
+        <a href="https://app.zero7.com.br" data-redireciona class="tarja__botao"
+          ><span class="tarja__botao-label">Comece a pontuar</span
+          ><span class="tarja__botao-seta" aria-hidden="true">→</span></a
+        >
+      </div>
+      <span class="tarja__progresso" aria-hidden="true"><span></span></span>
+    </aside>
+
     <main>
       <section class="hero-hero">
         <div class="hero-backdrop">

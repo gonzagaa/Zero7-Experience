@@ -570,7 +570,59 @@
     });
   }
 
+  /* ======================================================================
+     8. TARJA DO TOPO
+     Tres trabalhos:
+
+     - Medir a altura real da tarja e publicar em --tarja-h. A hero desconta
+       esse valor para continuar cabendo numa tela. No celular a tarja quebra
+       em duas linhas, por isso mede em vez de chutar.
+     - Preencher a linha de progresso com o quanto do periodo de participacao
+       ja passou.
+     - Esconder a tarja depois do fim da participacao: "ultimos dias" deixa
+       de ser verdade em 01/12.
+
+     Horarios em -03:00 (Brasilia), para nao depender do fuso de quem visita.
+     ====================================================================== */
+  var TARJA_INICIO = Date.parse("2026-09-01T00:00:00-03:00");
+  var TARJA_FIM = Date.parse("2026-12-01T00:00:00-03:00");
+
+  function ligarTarja() {
+    var tarja = document.querySelector(".tarja");
+    if (!tarja) return;
+    var raiz = document.documentElement;
+    var agora = Date.now();
+
+    if (agora >= TARJA_FIM) {
+      tarja.hidden = true;
+      return;
+    }
+
+    var fracao = (agora - TARJA_INICIO) / (TARJA_FIM - TARJA_INICIO);
+    fracao = Math.min(Math.max(fracao, 0), 1);
+    tarja.style.setProperty("--tarja-progresso", fracao.toFixed(4));
+
+    function medir() {
+      raiz.style.setProperty("--tarja-h", tarja.offsetHeight + "px");
+    }
+    medir();
+    if ("ResizeObserver" in window) {
+      new ResizeObserver(medir).observe(tarja);
+    } else {
+      window.addEventListener("resize", medir);
+    }
+
+    /* Dois quadros: a linha precisa ser pintada vazia antes, senao a
+       transicao de largura nao acontece. */
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        tarja.classList.add("tarja--pronta");
+      });
+    });
+  }
+
   function iniciar() {
+    ligarTarja();
     ligarAcordeao();
     ligarVideos();
     ligarBotoes();
